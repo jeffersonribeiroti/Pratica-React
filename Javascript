@@ -1,0 +1,58 @@
+import React, { useState } from "react";
+import "./App.css";
+
+function App() {
+  const [tasks, setTasks] = useState([]);
+  const [newTask, setNewTask] = useState("");
+
+  const addTask = () => {
+    if (newTask.trim()) {
+      setTasks([...tasks, { text: newTask, completed: false }]);
+      setNewTask("");
+    }
+  };
+
+  const toggleTaskCompletion = (index) => {
+    const updatedTasks = tasks.map((task, i) =>
+      i === index ? { ...task, completed: !task.completed } : task
+    );
+    setTasks(updatedTasks);
+  };
+
+  const removeTask = (index) => {
+    const updatedTasks = tasks.filter((_, i) => i !== index);
+    setTasks(updatedTasks);
+  };
+
+  const progress = Math.round(
+    (tasks.filter((task) => task.completed).length / tasks.length) * 100
+  );
+
+  return (
+    <div className="app">
+      <h1>To-Do List</h1>
+      <div className="input-section">
+        <input
+          type="text"
+          placeholder="Digite uma nova tarefa..."
+          value={newTask}
+          onChange={(e) => setNewTask(e.target.value)}
+        />
+        <button onClick={addTask}>Adicionar</button>
+      </div>
+      <ul>
+        {tasks.map((task, index) => (
+          <li key={index} className={task.completed ? "completed" : ""}>
+            <span onClick={() => toggleTaskCompletion(index)}>{task.text}</span>
+            <button onClick={() => removeTask(index)}>Remover</button>
+          </li>
+        ))}
+      </ul>
+      <div className="progress">
+        {tasks.length > 0 ? `Progresso: ${progress}%` : "Nenhuma tarefa criada."}
+      </div>
+    </div>
+  );
+}
+
+export default App;
